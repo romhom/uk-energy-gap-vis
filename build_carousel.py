@@ -30,7 +30,7 @@ def build_slide1(data):
     fig.suptitle(
         "UK electricity generation mix, 2000-2025",
         fontsize=bc.FS_LABEL + 4,
-        y=1.0,
+        y=1.05,
         fontweight="bold",
     )
     save_slide(fig, "carousel_1_generation_mix.png")

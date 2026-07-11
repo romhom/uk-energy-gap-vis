@@ -10,8 +10,8 @@ Builds a 3-panel figure from the companion workbook
            annual totals 2017-2025 (scatter, coloured by year)
 
 Requires: pandas, numpy, matplotlib, openpyxl
-Also requires the Poppins font to be installed system-wide, or update
-the font_manager.addfont() paths below to point at local .ttf files.
+Uses the Poppins font bundled in the local fonts/ folder, so no
+system-wide font installation is required.
 
 Run this file directly to build the combined 3-panel chart
 (gas_gap_wind_curtailment_chart.png). See build_carousel.py for the
@@ -19,6 +19,7 @@ single-panel LinkedIn-carousel version, which reuses the data loading
 and panel-drawing functions defined here.
 """
 
+import os
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -36,16 +37,10 @@ OUTPUT_PNG = "gas_gap_wind_curtailment_chart.png"
 # ---------------------------------------------------------------
 # Fonts
 # ---------------------------------------------------------------
-POPPINS_PATHS = [
-    "/usr/share/fonts/truetype/google-fonts/Poppins-Regular.ttf",
-    "/usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf",
-    "/usr/share/fonts/truetype/google-fonts/Poppins-Medium.ttf",
-]
-for f in POPPINS_PATHS:
-    try:
-        font_manager.fontManager.addfont(f)
-    except FileNotFoundError:
-        pass
+FONTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts")
+for f in os.listdir(FONTS_DIR):
+    if f.lower().endswith(".ttf"):
+        font_manager.fontManager.addfont(os.path.join(FONTS_DIR, f))
 plt.rcParams["font.family"] = "Poppins"
 
 
@@ -256,7 +251,9 @@ def draw_panel0(ax, data, show_legend=True, show_xlabel=False):
         ax.set_xlabel("Year", fontsize=FS_LABEL)
     style_spines(ax)
     ax.grid(alpha=0.15)
-    ax.set_xlim(*XLIM)
+    xlim_tmp=(XLIM[0], XLIM[1]-0.6)
+    print(xlim_tmp)
+    ax.set_xlim(*xlim_tmp)
     ax.tick_params(labelbottom=not show_xlabel or True, labelsize=FS_TICK)
     if not show_xlabel:
         ax.tick_params(labelbottom=False)
