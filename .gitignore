@@ -1,3 +1,6 @@
+# Local drafts, not for version control
+linkedin_post.md
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
