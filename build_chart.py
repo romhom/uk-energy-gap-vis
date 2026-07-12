@@ -251,9 +251,7 @@ def draw_panel0(ax, data, show_legend=True, show_xlabel=False, ylabel_fontsize=N
         ax.set_xlabel("Year", fontsize=FS_LABEL)
     style_spines(ax)
     ax.grid(alpha=0.15)
-    xlim_tmp=(XLIM[0], XLIM[1]-0.6)
-    print(xlim_tmp)
-    ax.set_xlim(*xlim_tmp)
+    ax.set_xlim(*XLIM)
     ax.tick_params(labelbottom=not show_xlabel or True, labelsize=FS_TICK)
     if not show_xlabel:
         ax.tick_params(labelbottom=False)
