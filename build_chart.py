@@ -125,7 +125,7 @@ STACK_ORDER = [
 # ---------------------------------------------------------------
 # Style constants
 # ---------------------------------------------------------------
-FS_LABEL, FS_TICK, FS_LEGEND, FS_ANNOT, FS_ERA = 19, 15.5, 16.5, 14, 17
+FS_LABEL, FS_TICK, FS_LEGEND, FS_ANNOT, FS_ERA = 28, 23, 24, 17, 20
 LW_THICK, LW_MED = 2.8, 2.3
 XLIM = (
     2000,
@@ -237,7 +237,7 @@ def style_spines(ax):
         spine.set_linewidth(1.8)
 
 
-def draw_panel0(ax, data, show_legend=True, show_xlabel=False):
+def draw_panel0(ax, data, show_legend=True, show_xlabel=False, ylabel_fontsize=None):
     """Panel 1: generation mix, stacked area."""
     gen_annual = data["gen_annual"]
     ax.stackplot(
@@ -246,7 +246,7 @@ def draw_panel0(ax, data, show_legend=True, show_xlabel=False):
         colors=[STACK_COLORS[c] for c in STACK_ORDER],
         alpha=0.95,
     )
-    ax.set_ylabel("Generation (TWh)", fontsize=FS_LABEL)
+    ax.set_ylabel("Generation (TWh)", fontsize=ylabel_fontsize or FS_LABEL)
     if show_xlabel:
         ax.set_xlabel("Year", fontsize=FS_LABEL)
     style_spines(ax)
@@ -306,7 +306,7 @@ def draw_panel0(ax, data, show_legend=True, show_xlabel=False):
     return leg
 
 
-def draw_panel1(ax, data):
+def draw_panel1(ax, data, ylabel_fontsize=None):
     """Panel 2: gas capacity gap, with historical eras shaded."""
     gas = data["gas"]
     scatter_df = data["scatter_df"]
@@ -340,11 +340,17 @@ def draw_panel1(ax, data):
     for y in scatter_df["year"]:
         color = PASTEL_WARM(data["norm"](y))
         ax.axvline(y, color=color, linewidth=LW_MED, alpha=0.9, zorder=1)
-    ax.set_ylabel("Growth in unused gas\ncapacity since 2000 (GW)", fontsize=FS_LABEL)
-    ax.set_xlabel("Year", fontsize=FS_LABEL)
+    ax.set_ylabel(
+        "Growth in unused\ngas capacity since\n2000 (GW)",
+        fontsize=ylabel_fontsize or FS_LABEL,
+        linespacing=0.85,
+    )
+    ax.set_xlabel("Year", fontsize=FS_LABEL, labelpad=2)
     style_spines(ax)
     ax.grid(alpha=0.15, zorder=0)
     ax.set_xlim(*XLIM)
+    ax.set_ylim(-14, 14)
+    ax.set_yticks([-10, -5, 0, 5, 10])
     ax.tick_params(labelsize=FS_TICK)
     ymax = ax.get_ylim()[1]
     for y in scatter_df["year"]:
@@ -352,7 +358,7 @@ def draw_panel1(ax, data):
             y,
             ymax * 0.92,
             str(int(y)),
-            fontsize=FS_ANNOT - 1.5,
+            fontsize=(FS_ANNOT + 1.5) * 1.25,
             color="#B06A3F",
             ha="center",
             rotation=90,
@@ -360,38 +366,40 @@ def draw_panel1(ax, data):
             fontweight="bold",
             zorder=3,
         )
-    ymin = ax.get_ylim()[0]
-    era_y = ymin + (ymax - ymin) * 0.06
+    era_y = -7.5
     ax.text(
         2005,
         era_y,
-        "Pre-wind CCGT buildout",
-        fontsize=FS_ERA,
+        "Pre-wind CCGT\nbuildout",
+        fontsize=FS_ERA * 1.25,
         ha="center",
-        color="#6B7280",
+        va="center",
+        color="#374151",
         style="italic",
     )
     ax.text(
         2014.5,
         era_y,
         "Demand decline +\nearly wind growth",
-        fontsize=FS_ERA,
+        fontsize=FS_ERA * 1.25,
         ha="center",
-        color="#4B8065",
+        va="center",
+        color="#24522F",
         style="italic",
     )
     ax.text(
         2022.3,
         era_y,
         "Wind at scale",
-        fontsize=FS_ERA,
+        fontsize=FS_ERA * 1.25,
         ha="center",
-        color="#4A6FA5",
+        va="center",
+        color="#1F3A66",
         style="italic",
     )
 
 
-def draw_panel2(ax, data, fig=None):
+def draw_panel2(ax, data, fig=None, show_colorbar=True, ylabel_fontsize=None):
     """Panel 3: offshore wind generation vs. constraint cost, scatter."""
     scatter_df = data["scatter_df"]
     norm = data["norm"]
@@ -410,11 +418,11 @@ def draw_panel2(ax, data, fig=None):
     )
     for _, row in scatter_df.iterrows():
         yr = int(row["year"])
-        xytext = (-55, -6) if yr == 2025 else (9, 7)
+        xytext = (-75, -6) if yr == 2025 else (9, 7)
         ax.annotate(
             str(yr),
             (row["wind_twh"], row["cost_m"]),
-            fontsize=FS_ANNOT + 1.5,
+            fontsize=(FS_ANNOT + 1.5) * 1.25,
             xytext=xytext,
             textcoords="offset points",
             color="#4B5563",
@@ -437,9 +445,9 @@ def draw_panel2(ax, data, fig=None):
     )
     ax.text(
         20,
-        750,
+        1000,
         "More wind\nHigher curtailment cost",
-        fontsize=FS_ANNOT,
+        fontsize=FS_ANNOT * 1.25,
         color="#6B7280",
         style="italic",
         ha="left",
@@ -447,11 +455,13 @@ def draw_panel2(ax, data, fig=None):
     )
 
     ax.set_xlabel("Offshore wind generation (TWh, annual)", fontsize=FS_LABEL)
-    ax.set_ylabel("Constraint/curtailment cost (£m, annual)", fontsize=FS_LABEL)
+    ax.set_ylabel(
+        "Constraint/curtailment\ncost (£m, annual)", fontsize=ylabel_fontsize or FS_LABEL
+    )
     ax.grid(alpha=0.15)
     ax.tick_params(labelsize=FS_TICK)
 
-    if fig is not None:
+    if fig is not None and show_colorbar:
         # horizontal colorbar inset, top-left, ~35% of panel width
         cbar_ax = ax.inset_axes([0.05, 0.83, 0.35, 0.035])
         cbar = fig.colorbar(sc, cax=cbar_ax, orientation="horizontal")
@@ -473,9 +483,10 @@ def main():
     ax1 = fig.add_subplot(gs[1])
     ax2 = fig.add_subplot(gs[2])
 
-    draw_panel0(ax0, data)
-    draw_panel1(ax1, data)
-    draw_panel2(ax2, data, fig=fig)
+    common_ylabel_fs = FS_LABEL
+    draw_panel0(ax0, data, ylabel_fontsize=common_ylabel_fs)
+    draw_panel1(ax1, data, ylabel_fontsize=common_ylabel_fs)
+    draw_panel2(ax2, data, fig=fig, ylabel_fontsize=common_ylabel_fs)
 
     # ---- align panel widths/positions: panels 0 & 1 flush together, panel 2 nudged up ----
     fig.canvas.draw()
@@ -485,7 +496,7 @@ def main():
     common_x0 = pos1.x0
     common_width = pos1.width
     ax0.set_position([common_x0, pos1.y1, common_width, pos0.height])
-    ax2.set_position([common_x0, pos2.y0 + 0.008, common_width, pos2.height])
+    ax2.set_position([common_x0, pos2.y0 - 0.012, common_width, pos2.height])
 
     plt.savefig(OUTPUT_PNG, dpi=150, bbox_inches="tight", pad_inches=0.35)
     print(f"Saved {OUTPUT_PNG}")

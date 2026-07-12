@@ -30,7 +30,7 @@ def build_slide1(data):
     fig.suptitle(
         "UK electricity generation mix, 2000-2025",
         fontsize=bc.FS_LABEL + 4,
-        y=1.05,
+        y=1.08,
         fontweight="bold",
     )
     save_slide(fig, "carousel_1_generation_mix.png")
@@ -50,7 +50,7 @@ def build_slide2(data):
 
 def build_slide3(data):
     fig, ax = plt.subplots(figsize=SLIDE_SIZE)
-    bc.draw_panel2(ax, data, fig=fig)
+    bc.draw_panel2(ax, data, fig=fig, show_colorbar=False)
     fig.suptitle(
         "Offshore wind vs. grid constraint cost, 2017-2025",
         fontsize=bc.FS_LABEL + 4,

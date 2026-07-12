@@ -12,8 +12,8 @@ Gas capacity has barely moved, but it's sitting idle more and more. Some of that
 
 The cost of the wind-to-gas handover has climbed sharply since 2017, broadly tracking wind's growth. We're paying to curtail the wind, separately paying to keep gas plants idling as backup, and paying even more again to fire them up at short notice. I found good data for the curtailment cost, but didn't have time to wrangle gas auction prices into a usable dataset to plot the other side properly.
 
-A key problem I think is wider co-ordination of big interconnected infrastructure. Good interconnectors are needed to get power from where it's generated to where it's used, and that build hasn't kept pace. For example, Eastern Green Link 2 only started construction in 2024 and won't be live until 2029 and National Grid and Scottish Power were fined £158m by Ofgem over a two-year delay to the equivalent link into Wales.
+A key problem I think is wider co-ordination of big interconnected infrastructure. Good interconnectors are needed to get power from where it's generated to where it's used, and that build hasn't kept pace. For example, Eastern Green Link 2 is on schedule, but it's still a five-year build from construction starting in 2024 to going live in 2029. And on the equivalent link to Wales, the Western Link, National Grid and Scottish Power were fined £158m by Ofgem over a two-year delay [https://www.ofgem.gov.uk/press-release/ps158-million-redress-two-year-delay-major-western-link-subsea-cable].
 
-Good scenario and cost modelling in the presence of deep uncertainties would to reveal impacts and 
+Early investment in combined scenario and cost modelling in the presence of deep uncertainties would have shown these impacts in advance and, if well presented, highlighted the longer term risks much earlier.
 
 Full dataset and the code behind these charts are on GitHub [link] if you fancy a dig around yourself.
